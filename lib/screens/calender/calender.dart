@@ -29,8 +29,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
         .getUserNameFromSharedPref();
     super.initState();
   }
- 
-   
+
   @override
   Widget build(BuildContext context) {
     final dtProvider = Provider.of<DataProvider>(context);
@@ -70,14 +69,15 @@ class _CalenderScreenState extends State<CalenderScreen> {
                 rowHeight: 70,
                 availableCalendarFormats: const {CalendarFormat.month: "Month"},
                 onDaySelected: (selectedDay, focusedDay) {
-                if (dtProvider.checkDaysInfoAvailableOrNot(selectedDay)) {
-                  Navigator.push(
+                  if (dtProvider.checkDaysInfoAvailableOrNot(selectedDay)) {
+                    Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => InformationScreen(
                             dateTime: selectedDay,
                           ),
-                            ));}
+                        ));
+                  }
                 },
                 onPageChanged: (focusedDay) {
                   dtProvider.updateFocusedDay(dateTime: focusedDay);
@@ -273,7 +273,6 @@ class _CalenderScreenState extends State<CalenderScreen> {
                 focusedDay: dtProvider.focusedDay,
               ),
             ),
-        
           ],
         ),
       ),
@@ -281,6 +280,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
     );
   }
 }
+
 /*
 class HoursDisplay extends StatelessWidget{
     final DateTime day;
@@ -391,11 +391,12 @@ class CalenderCell extends StatelessWidget {
     //final nullCheck=(allottedHours == null && workingHour == null && totalHour == null && !isLeave);
     return Container(
       margin: const EdgeInsets.all(1),
+      padding: const EdgeInsets.all(5),
       alignment: Alignment.center,
       decoration: BoxDecoration(
         color: color,
-        // border: Border.all(color: textColor ?? Colors.black),
-        borderRadius: BorderRadius.circular(25),
+        border: Border.all(color: textColor ?? Colors.black),
+        borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -404,7 +405,8 @@ class CalenderCell extends StatelessWidget {
           if (isLateMarked)
             const Text(
               "one late mark",
-              style: TextStyle(fontSize: 8, color: Colors.red),
+              style: TextStyle(
+                  fontSize: 7, fontWeight: FontWeight.bold, color: Colors.red),
               textAlign: TextAlign.center,
             ),
           Text(DateFormat('EEE').format(day).toUpperCase(),
@@ -417,7 +419,8 @@ class CalenderCell extends StatelessWidget {
                 color: textColor ?? Colors.black),
             // style: GoogleFonts.abel(),
           ),
-          /*Text(
+          /*
+          Text(
             "WH : ${workingHour ?? 'NA'}",
             style: Theme.of(context)
                 .textTheme

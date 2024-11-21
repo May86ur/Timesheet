@@ -1,6 +1,7 @@
 // ignore_for_file: library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:timesheet/api/login_api.dart';
 import 'package:timesheet/provider/data_provider.dart';
@@ -57,21 +58,23 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                     )
-                  : Card(
-                      color: Colors.white,
-                      elevation: 8,
-                      child: Form(
-                        key: _formkey,
-                        child: Column(
-                          children: <Widget>[
-                            sizedbox,
-                            _buildTitel(context),
-                            sizedbox,
-                            _buildPhoneField(context),
-                            _buildPasswordField(context),
-                            _buildLogInButton(context),
-                            sizedbox,
-                          ],
+                  : AutofillGroup(
+                      child: Card(
+                        color: Colors.white,
+                        elevation: 8,
+                        child: Form(
+                          key: _formkey,
+                          child: Column(
+                            children: <Widget>[
+                              sizedbox,
+                              _buildTitel(context),
+                              sizedbox,
+                              _buildPhoneField(context),
+                              _buildPasswordField(context),
+                              _buildLogInButton(context),
+                              sizedbox,
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -119,6 +122,7 @@ class _LoginPageState extends State<LoginPage> {
           controller: userNameController,
           keyboardType: TextInputType.text,
           textInputAction: TextInputAction.next,
+          autofillHints: const [AutofillHints.username],
           validator: (value) {
             if (value!.isEmpty) {
               return ("Please Enter Your Username");
@@ -150,6 +154,7 @@ class _LoginPageState extends State<LoginPage> {
         controller: passwordController,
         keyboardType: TextInputType.text,
         textInputAction: TextInputAction.next,
+        autofillHints: const [AutofillHints.password],
         validator: (value) {
           RegExp regex = RegExp(r'^.{3,}$');
           if (value!.isEmpty) {
@@ -193,11 +198,6 @@ class _LoginPageState extends State<LoginPage> {
     return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 10.0),
         child: ElevatedButton(
-          child: const Center(
-              child: Text(
-            "Login",
-            style: TextStyle(color: Colors.white),
-          )),
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.blue.shade700,
             elevation: 3,
@@ -206,10 +206,16 @@ class _LoginPageState extends State<LoginPage> {
             padding: const EdgeInsets.all(20),
           ),
           onPressed: () {
+            TextInput.finishAutofillContext();
             // Navigator.pushNamed(context,  CalenderScreen.routeName);
             LoginApi.login(
                 context, userNameController.text, passwordController.text);
           },
+          child: const Center(
+              child: Text(
+            "Login",
+            style: TextStyle(color: Colors.white),
+          )),
         ));
   }
 }

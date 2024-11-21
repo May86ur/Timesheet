@@ -56,32 +56,33 @@ class LoginApi {
       dtProvider.updateIsLoginLoading(value: true, isNotify: true);
       if (dtProvider.loginType != null) {
         await dtProvider.getUserIdFromSharedPred();
-        // Position position = await Geolocator.getCurrentPosition();
-        // if (!position.isMocked) {
-        var curlat = 19.218725;
-        var curlon = 72.864023;
-        var url =
-            "http://timesheet.seprojects.in/api/ver1/insertLogin/${Constants.conString}/${dtProvider.userId}/${dtProvider.loginType}/${curlat},${curlon}";
-        var response = await http.post(Uri.parse(url));
-        var result = jsonDecode(response.body);
+        Position position = await Geolocator.getCurrentPosition();
+        if (!position.isMocked) {
+          var curlat =
+              19.203352; //position.latitude; //19.218725  Kandivali: 19.203352,72.847511;
+          var curlon = 72.864023; // position.longitude; //72.864023;
+          var url =
+              "http://timesheet.seprojects.in/api/ver1/insertLogin/${Constants.conString}/${dtProvider.userId}/${dtProvider.loginType}/${curlat},${curlon}";
+          var response = await http.post(Uri.parse(url));
+          var result = jsonDecode(response.body);
 
-        if (response.statusCode == 200) {
-          if (result['Status'] == "Success") {
-            dtProvider.updateIsLoginLoading(value: false, isNotify: true);
-            final loginDetails = LoginDetails.fromJson(result['data']);
-            dtProvider.updateLoginDetails(loginDetails);
-            Utils.showSnackbar(
-                context: context, content: "logged in successfully");
-          } else if (result['Status'] == "Error") {
-            dtProvider.updateIsLoginLoading(value: false, isNotify: true);
-            Utils.showSnackbar(
-                context: context, content: result['Error'].toString());
+          if (response.statusCode == 200) {
+            if (result['Status'] == "Success") {
+              dtProvider.updateIsLoginLoading(value: false, isNotify: true);
+              final loginDetails = LoginDetails.fromJson(result['data']);
+              dtProvider.updateLoginDetails(loginDetails);
+              Utils.showSnackbar(
+                  context: context, content: "logged in successfully");
+            } else if (result['Status'] == "Error") {
+              dtProvider.updateIsLoginLoading(value: false, isNotify: true);
+              Utils.showSnackbar(
+                  context: context, content: result['Error'].toString());
+            }
           }
+        } else {
+          dtProvider.updateIsLoginLoading(value: false, isNotify: true);
+          dtProvider.showFakeLocationError(context);
         }
-        // } else {
-        //   dtProvider.updateIsLoginLoading(value: false, isNotify: true);
-        //   dtProvider.showFakeLocationError(context);
-        // }
       } else {
         dtProvider.updateIsLoginLoading(value: false, isNotify: true);
         Utils.showSnackbar(
@@ -103,30 +104,32 @@ class LoginApi {
     try {
       dtProvider.updateIsLoginLoading(value: true, isNotify: true);
       Position position = await Geolocator.getCurrentPosition();
-      var curlat = 19.218725;
-      var curlon = 72.864023;
-      // if (!position.isMocked) {
-      var url =
-          "http://timesheet.seprojects.in/api/ver1/insertLogout/${Constants.conString}/${dtProvider.userId}/${curlat},${curlon}";
-      var response = await http.patch(Uri.parse(url));
-      var result = jsonDecode(response.body);
-      if (response.statusCode == 200) {
-        if (result['Status'] == "Success") {
-          dtProvider.updateIsLoginLoading(value: false, isNotify: true);
-          final loginDetails = LoginDetails.fromJson(result['data']);
-          dtProvider.updateLoginDetails(loginDetails);
-          Utils.showSnackbar(
-              context: context, content: "logged out successfully");
-        } else if (result['Status'] == "Error") {
-          dtProvider.updateIsLoginLoading(value: false, isNotify: true);
-          Utils.showSnackbar(
-              context: context, content: result['Error'].toString());
+
+      if (!position.isMocked) {
+        var curlat =
+            19.203352; //position.latitude; //19.218725  Kandivali: 19.203352,72.847511;
+        var curlon = 72.864023; // position.longitude; //72.864023;
+        var url =
+            "http://timesheet.seprojects.in/api/ver1/insertLogout/${Constants.conString}/${dtProvider.userId}/${curlat},${curlon}";
+        var response = await http.patch(Uri.parse(url));
+        var result = jsonDecode(response.body);
+        if (response.statusCode == 200) {
+          if (result['Status'] == "Success") {
+            dtProvider.updateIsLoginLoading(value: false, isNotify: true);
+            final loginDetails = LoginDetails.fromJson(result['data']);
+            dtProvider.updateLoginDetails(loginDetails);
+            Utils.showSnackbar(
+                context: context, content: "logged out successfully");
+          } else if (result['Status'] == "Error") {
+            dtProvider.updateIsLoginLoading(value: false, isNotify: true);
+            Utils.showSnackbar(
+                context: context, content: result['Error'].toString());
+          }
         }
+      } else {
+        dtProvider.updateIsLoginLoading(value: false, isNotify: true);
+        dtProvider.showFakeLocationError(context);
       }
-      // } else {
-      //   dtProvider.updateIsLoginLoading(value: false, isNotify: true);
-      //   dtProvider.showFakeLocationError(context);
-      // }
     } catch (e) {
       dtProvider.updateIsLoginLoading(value: false, isNotify: true);
       Utils.showSnackbar(context: context, content: e.toString());
